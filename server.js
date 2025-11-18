@@ -10,7 +10,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/api/mensaje", (req, res) => {
-  res.json({ mensaje: "Hola desde el backend!" });
+  res.json({ mensaje: "Holi desde el backend! :b" });
 });
 
 app.listen(port, () => console.log("Servidor funcionando en puerto " + port));
