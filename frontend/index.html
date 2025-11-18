@@ -3,37 +3,428 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Frontend conectado al Backend</title>
+  <title>Vinyl Vibes - Frontend + Backend</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background-color: #f5f5f5;
-      font-family: Arial, sans-serif;
-      padding: 40px;
-      text-align: center;
+      min-height: 100vh;
+      font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #3b2b4a 0, #050308 45%, #000 100%);
+      color: #f9f3e7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 900px;
+      background: rgba(5, 3, 10, 0.96);
+      border-radius: 24px;
+      box-shadow:
+        0 18px 40px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 215, 155, 0.18);
+      padding: 28px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      gap: 26px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Brillo decorativo */
+    .card::before {
+      content: "";
+      position: absolute;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 196, 0, 0.3), transparent 65%);
+      top: -80px;
+      right: -80px;
+      opacity: 0.7;
+      pointer-events: none;
+      filter: blur(2px);
+    }
+
+    .left {
+      position: relative;
+      z-index: 1;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(8, 6, 18, 0.9);
+      border: 1px solid rgba(255, 214, 165, 0.4);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fcd9a5;
+      margin-bottom: 14px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ff7b34;
+      box-shadow: 0 0 8px rgba(255, 123, 52, 0.9);
     }
 
     h1 {
-      color: #333;
+      font-size: 30px;
+      line-height: 1.2;
+      margin-bottom: 10px;
     }
 
-    #mensaje {
-      margin-top: 20px;
-      font-size: 22px;
-      font-weight: bold;
-      color: green;
+    h1 span {
+      display: block;
+      font-size: 16px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #f5bd71;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #e3d7c3;
+      margin-bottom: 20px;
+    }
+
+    .info {
+      font-size: 13px;
+      color: #c5b7a3;
+      margin-bottom: 16px;
+    }
+
+    .highlight {
+      color: #ffd27a;
+      font-weight: 600;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      margin-bottom: 18px;
+    }
+
+    .btn-round {
+      border-radius: 999px;
+      padding: 10px 18px;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease,
+        color 0.15s ease;
+    }
+
+    .btn-primary {
+      background: radial-gradient(circle at 30% 0, #ffd27a 0, #ff7b34 40%, #ea4034 100%);
+      color: #1b0503;
+      box-shadow:
+        0 10px 20px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 222, 181, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(12, 8, 20, 0.9);
+      color: #f9e6c9;
+      border: 1px solid rgba(255, 214, 165, 0.4);
+    }
+
+    .btn-round:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        0 14px 28px rgba(0, 0, 0, 0.8),
+        0 0 0 1px rgba(255, 222, 181, 0.7);
+    }
+
+    .btn-round:active {
+      transform: translateY(0);
+      box-shadow:
+        0 6px 14px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 222, 181, 0.6);
+    }
+
+    .status {
+      font-size: 13px;
+      margin-top: 4px;
+      min-height: 18px;
+      color: #f2e5cf;
+    }
+
+    .status.ok {
+      color: #9be27d;
+    }
+
+    .status.error {
+      color: #ff9a8b;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+      margin-top: 18px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #b7a58f;
+    }
+
+    .pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 214, 165, 0.4);
+      background: rgba(8, 6, 18, 0.9);
+    }
+
+    /* Lado derecho — Vinilo */
+    .right {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vinyl-wrapper {
+      position: relative;
+      width: 230px;
+      height: 230px;
+    }
+
+    .vinyl {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 30% 30%, #444 0, #111 26%, #050505 50%, #000 70%),
+        repeating-radial-gradient(circle, #050505 0, #050505 2px, #000 2px, #000 4px);
+      box-shadow:
+        0 20px 35px rgba(0, 0, 0, 0.9),
+        0 0 0 2px #000,
+        0 0 0 10px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: spin 14s linear infinite;
+    }
+
+    .label {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 20%, #ffe9b3 0, #ff9f46 40%, #c54538 100%);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8px;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #2c0502;
+    }
+
+    .label span {
+      font-weight: 700;
+      font-size: 10px;
+      margin-top: 2px;
+    }
+
+    .center-hole {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #1b0503;
+      box-shadow:
+        0 0 0 2px rgba(0, 0, 0, 0.8),
+        0 0 0 4px rgba(255, 214, 165, 0.9);
+      margin-top: 4px;
+    }
+
+    @keyframes spin {
+      from {
+        transform: rotate(0deg) translateZ(0);
+      }
+      to {
+        transform: rotate(360deg) translateZ(0);
+      }
+    }
+
+    .glow-ring {
+      position: absolute;
+      inset: -16px;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 218, 182, 0.4);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .small-text {
+      font-size: 11px;
+      color: #d8cbb6;
+      margin-top: 10px;
+      opacity: 0.9;
+    }
+
+    .link {
+      color: #ffb76c;
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(255, 183, 108, 0.7);
+    }
+
+    .link:hover {
+      color: #ffe0ac;
+      border-bottom-style: solid;
+    }
+
+    @media (max-width: 760px) {
+      .card {
+        grid-template-columns: 1fr;
+      }
+
+      .right {
+        order: -1;
+      }
+
+      .vinyl-wrapper {
+        width: 190px;
+        height: 190px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
 <body>
+  <main class="card">
+    <section class="left">
+      <div class="badge">
+        <span class="dot"></span>
+        Vinyl Vibes · Demo Full-Stack
+      </div>
 
-  <h1>Frontend funcionando correctamente, holiii</h1>
-  <p>Mensaje recibido del backend:</p>
+      <h1>
+        Hola desde el backend
+        <span>Netlify Frontend · Render Backend</span>
+      </h1>
 
-  <!-- Aquí aparecerá el mensaje del backend -->
-  <p id="mensaje">Cargando mensaje...</p>
+      <p class="subtitle">
+        Página de ejemplo para demostrar la conexión entre un
+        <span class="highlight">frontend estático</span> en Netlify
+        y un <span class="highlight">backend en Node.js</span> desplegado en Render.
+      </p>
 
-  <!-- Conexión con backend -->
-  <script src="script.js"></script>
+      <p class="info">
+        Al hacer clic en el botón, el frontend envía una petición
+        <span class="highlight">fetch()</span> al servidor backend y muestra la
+        respuesta en tiempo real.
+      </p>
+
+      <div class="controls">
+        <button class="btn-round btn-primary" onclick="consultarBackend()">
+          ▶ Consultar backend
+        </button>
+
+        <button class="btn-round btn-secondary" onclick="limpiarMensaje()">
+          ○ Limpiar mensaje
+        </button>
+      </div>
+
+      <div id="estado" class="status">
+        Esperando interacción…
+      </div>
+
+      <div id="mensaje" class="status ok" style="margin-top: 10px;"></div>
+
+      <div class="meta">
+        <div class="pill">Frontend: Netlify</div>
+        <div class="pill">Backend: Render · Node + Express</div>
+        <div class="pill">Endpoint: <span class="highlight">/api/mensaje</span></div>
+      </div>
+
+      <p class="small-text">
+        Durante la presentación, puedes explicar que el botón ejecuta una
+        petición <code>fetch()</code> hacia:
+        <br />
+        <span class="highlight">https://emiweb.onrender.com/api/mensaje</span>
+        y coloca el texto de la respuesta en la sección “Mensaje”.
+      </p>
+    </section>
+
+    <section class="right">
+      <div class="vinyl-wrapper">
+        <div class="glow-ring"></div>
+        <div class="vinyl">
+          <div class="label">
+            FULL-STACK
+            <span>VINYL VIBES</span>
+            <div class="center-hole"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const ESTADO = document.getElementById("estado");
+    const MENSAJE = document.getElementById("mensaje");
+
+    function setEstado(texto, tipo = "") {
+      ESTADO.textContent = texto;
+      ESTADO.classList.remove("ok", "error");
+      if (tipo) ESTADO.classList.add(tipo);
+    }
+
+    function limpiarMensaje() {
+      MENSAJE.textContent = "";
+      setEstado("Mensaje limpiado. Haz clic en «Consultar backend».", "ok");
+    }
+
+    async function consultarBackend() {
+      try {
+        setEstado("Consultando backend...", "");
+        MENSAJE.textContent = "";
+
+        const respuesta = await fetch("https://emiweb.onrender.com/api/mensaje");
+        if (!respuesta.ok) {
+          throw new Error("Respuesta HTTP no OK: " + respuesta.status);
+        }
+
+        const data = await respuesta.json();
+        MENSAJE.textContent = data.mensaje || "Respuesta recibida, pero sin campo 'mensaje'.";
+        setEstado("Conexión exitosa con el backend.", "ok");
+      } catch (error) {
+        console.error("Error al conectar con backend:", error);
+        setEstado("Error al conectar con el backend.", "error");
+        MENSAJE.textContent = "No se pudo obtener el mensaje del servidor.";
+      }
+    }
+  </script>
 </body>
 </html>
