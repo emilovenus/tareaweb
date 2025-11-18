@@ -5,6 +5,10 @@ const cors = require("cors");
 
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("Backend funcionando correctamente!");
+});
+
 app.get("/api/mensaje", (req, res) => {
   res.json({ mensaje: "Hola desde el backend!" });
 });

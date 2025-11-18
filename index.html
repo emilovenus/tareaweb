@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Frontend conectado al Backend</title>
+</head>
+<body>
+  <h1>Prueba de conexión</h1>
+  <p id="respuesta">Cargando...</p>
+
+  <script>
+    fetch("https://emiweb.onrender.com/api/mensaje")
+      .then(res => res.json())
+      .then(data => document.getElementById("respuesta").innerText = data.mensaje)
+      .catch(err => document.getElementById("respuesta").innerText = "Error conectando al backend");
+  </script>
+</body>
+</html>
